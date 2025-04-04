@@ -1,5 +1,11 @@
 # TypeSpec Emit JSON examples
 
+[![npm version](https://badge.fury.io/js/typespec-emit-json-examples.svg)](https://www.npmjs.com/package/typespec-emit-json-examples)
+[![npm](https://img.shields.io/npm/dt/typespec-emit-json-examples.svg)](https://www.npmjs.com/package/typespec-emit-json-examples)
+[![MIT](https://img.shields.io/npm/l/typespec-emit-json-examples.svg)](https://github.com/wictorwilen/typespec-emit-json-examples/blob/master/LICENSE.md)
+[![GitHub issues](https://img.shields.io/github/issues/wictorwilen/typespec-emit-json-examples.svg)](https://github.com/wictorwilen/typespec-emit-json-examples/issues)
+[![GitHub closed issues](https://img.shields.io/github/issues-closed/wictorwilen/typespec-emit-json-examples.svg)](https://github.com/wictorwilen/typespec-emit-json-examples/issues?q=is%3Aissue+is%3Aclosed)
+
 [TypeSpec](https://typespec.io) emitter for models to create JSON sample objects.
 
 ## Installation
