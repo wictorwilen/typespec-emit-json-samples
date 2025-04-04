@@ -16,6 +16,25 @@ This package is designed to work with the TypeSpec compiler. After installing, y
 
 ## Configuration
 
+Use the following configuration in the `tspconfig.yaml`
+
+- **namespace** (string, required) - the namespace where the models are found
+- **models** (array(string), required) - the actual models to create samples from  
+- **outDir**: (string) - the output directory
+
+``` yaml
+emit:
+  - "typespec-emit-json-samples"
+options:
+  "typespec-emit-json-samples":
+    "namespace": "PersonView"
+    "models":
+      - Car
+      - Engine
+    "outDir": "{cwd}/tsp-output"
+
+```
+
 
 
 ## Development
