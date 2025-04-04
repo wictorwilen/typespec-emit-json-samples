@@ -1,7 +1,5 @@
 import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Type, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap } from "@typespec/compiler";
 import { Options } from "./lib.js";
-import { Tracer } from "@typespec/compiler";
-
 
 
 function getRandomItem<T>(array: readonly T[]): T {
@@ -15,16 +13,8 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value):
             return `"${value.value}"`;
             break;
         case "ArrayValue":
-            // if(property.model && value.values.length == 0) {
-            //     console.log(property.model.name)
-            //     const modelEx = getExamples(context.program, property.model);
-            //     if(modelEx.length > 0) {
-            //         const ex = getRandomItem(modelEx);
-            //         return emitValue(context, property, ex.value);
-            //     }
-            // }
             return "[" + value.values.map((v, index, arr) => {
-                return emitValue(context, property, v) + (index < arr.length - 1 ?  ", ": "");
+                return emitValue(context, property, v) + (index < arr.length - 1 ? ", " : "");
             }) + "]"
 
             break;
@@ -98,27 +88,6 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
         }
     }
 
-    // console.log(property.type.entityKind)
-    // if (model.baseModel) {
-    //     // TODO: remove
-    //     console.log("basemod")
-    //     const baseModelEx = getExamples(context.program, model.baseModel);
-    //     console.log(property.type.kind)
-    //     if (baseModelEx.length > 0) {
-    //         const ex = getRandomItem(baseModelEx);
-    //         switch (ex.value.valueKind) {
-    //             case "ObjectValue":
-    //                 const p = (ex.value as ObjectValue).properties.get(property.name);
-    //                 if (p) {
-    //                     return emitValue(context, property, p.value);
-    //                 }
-    //                 break;
-    //             default:
-    //                 console.log(`Value type ${ex.value.valueKind} not yet supported`);
-    //                 return "TODO:2 " + ex.value.valueKind;
-    //         }
-    //     }
-    // }
     // return undefined if no examples provided
     return "null"; // TODO: change to undefined in TS JSON mode
 }
@@ -143,7 +112,7 @@ const emitSample = (context: EmitContext, model: Model, options: Options): { lin
         lines[lines.length - 1] = lines[lines.length - 1].slice(0, -1);
     }
 
-   // TODO: Check for open types
+    // TODO: Check for open types
 
     lines.push(`}`)
 
@@ -158,24 +127,24 @@ export async function $onEmit(context: EmitContext) {
             outDir: context.options["outDir"],
             namespace: context.options["namespace"],
         }
-    
+
         const outfiles: { [key: string]: string[] } = {};
         navigateProgram(context.program, {
             namespace(ns) {
-                if(ns.name == options.namespace) {
+                if (ns.name == options.namespace) {
                     ns.models.forEach((model: Model) => {
                         if (options.models.includes(model.name)) {
                             const result = emitSample(context, model, options);
                             outfiles[model.name] = result.lines;
                         }
-                        
+
                     });
                 }
-                
-                
+
+
             }
         });
-        if(Object.keys(outfiles).length != 0) {
+        if (Object.keys(outfiles).length != 0) {
             const out = Object.keys(outfiles).map(async (key) => {
                 await emitFile(context.program, {
                     path: resolvePath(options.outDir ?? context.emitterOutputDir, `sample-${key}.json`),
@@ -186,6 +155,6 @@ export async function $onEmit(context: EmitContext) {
         else {
             context.program.trace("emit", "No models found");
         }
-        
+
     }
 }
