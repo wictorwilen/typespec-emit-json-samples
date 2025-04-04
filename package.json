@@ -1,0 +1,36 @@
+{
+  "name": "typespec-emit-json-samples",
+  "version": "1.0.0",
+  "description": "TypeSpec emitter for models to create JSON sample objects based on the TypeSpec model and examples.",
+  "license": "MIT",
+  "author": {
+    "name": "Wictor Wilén",
+    "email": "wictor@wictorwilen.se",
+    "url": "https://www.wictorwilen.se"
+  },
+  "type": "module",
+  "keywords": [
+    "typespec",
+    "json",
+    "emitter"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "watch": "tsc --watch",
+    "test": "npm run build && node --test"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^0.66.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.17",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    }
+  }
+}
