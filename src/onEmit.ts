@@ -1,33 +1,60 @@
 import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Type, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap } from "@typespec/compiler";
 import { Options } from "./lib.js";
 
+const INDENT_SIZE = 4;
+
+const line = (indent: number, text: string): string => {
+    return `${" ".repeat(indent * INDENT_SIZE)}${text}`;
+}
+
+const addLine = (lines: string[], indent: number, text: string): void => {
+    lines.push(line(indent, text));
+}
 
 function getRandomItem<T>(array: readonly T[]): T {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
 }
 
-const emitValue = (context: EmitContext, property: ModelProperty, value: Value): string => {
+const emitValue = (context: EmitContext, property: ModelProperty, value: Value, indent: number): string => {
+    let ret = "";
     switch (value.valueKind) {
+        case "NullValue":
+            return "null";
         case "StringValue":
+        case "NumericValue":
             return `"${value.value}"`;
-            break;
         case "ArrayValue":
-            return "[" + value.values.map((v, index, arr) => {
-                return emitValue(context, property, v) + (index < arr.length - 1 ? ", " : "");
-            }) + "]"
-
+            if (value.values.length > 0) {
+                ret = "[\n";
+                ret += value.values.map((v, index, arr) => {
+                    return emitValue(context, property, v, indent + 1) + "\n";
+                }).join("");
+                // remove the last comma
+                if (ret.length > 1) {
+                    ret = ret.slice(0, -2);
+                }
+                ret = ret + "\n";
+                ret += line(indent, "]");
+            } else {
+                ret = "[]"
+            }
+            return ret;
             break;
         case "ObjectValue":
-            let ret = "{\n";
+            ret = line(indent, "{\n");
             value.properties.forEach(v => {
-                ret += `"${v.name}": ${emitValue(context, property, v.value)},\n`
+                ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
             });
+
             // remove the last comma
             if (ret.length > 1) {
                 ret = ret.slice(0, -2);
             }
-            ret = ret + "\n}";
+            ret = ret + "\n";
+
+            ret = ret + line(indent, "},");
+
             return ret;
             break;
         default:
@@ -37,12 +64,12 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value):
     return "TODO:1 " + value.valueKind;
 }
 
-const emitSampleValue = (context: EmitContext, model: Model, property: ModelProperty, options: Options): string => {
+const emitSampleValue = (context: EmitContext, model: Model, property: ModelProperty, options: Options, indent: number): string => {
 
     const propEx = getExamples(context.program, property);
     if (propEx.length > 0) {
         const ex = getRandomItem(propEx);
-        return emitValue(context, property, ex.value);
+        return emitValue(context, property, ex.value, indent);
     }
 
     const modelEx = getExamples(context.program, model);
@@ -52,7 +79,7 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
             case "ObjectValue":
                 const p = (ex.value as ObjectValue).properties.get(property.name);
                 if (p) {
-                    return emitValue(context, property, p.value);
+                    return emitValue(context, property, p.value, indent);
                 }
                 break;
             default:
@@ -62,22 +89,19 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
     }
 
     if (property.type.kind === "Model") {
+        // TODO: not done yet
         // check if the model has any default values
-        console.log("x")
         const modelEx = getExamples(context.program, property.type);
         if (modelEx.length > 0) {
             const ex = getRandomItem(modelEx);
             switch (ex.value.valueKind) {
                 case "ObjectValue":
-                    let ret = "{\n";
+                    let ret = line(indent, "{\n");
                     ex.value.properties.forEach(v => {
-                        ret += `"${v.name}": ${emitValue(context, property, v.value)},\n`
+                        ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
                     });
-                    // remove the last comma
-                    if (ret.length > 1) {
-                        ret = ret.slice(0, -2);
-                    }
-                    ret = ret + "\n}";
+
+                    ret = ret + line(indent, "\n}");
                     return ret;
 
                     break;
@@ -96,15 +120,16 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
 const emitSample = (context: EmitContext, model: Model, options: Options): { lines: string[] } => {
     const lines: string[] = [];
 
-    lines.push("{");
+    const indent = 0;
+    addLine(lines, indent, "{");
 
     if (model.baseModel) {
         model.baseModel.properties.forEach((prop: ModelProperty) => {
-            lines.push(`\t"${prop.name}": ${emitSampleValue(context, model, prop, options)},`)
+            addLine(lines, indent + 1, `"${prop.name}": ${emitSampleValue(context, model, prop, options, indent + 1)},`)
         });
     }
     model.properties.forEach((prop: ModelProperty) => {
-        lines.push(`\t"${prop.name}": ${emitSampleValue(context, model, prop, options)},`)
+        addLine(lines, indent + 1, `"${prop.name}": ${emitSampleValue(context, model, prop, options, indent + 1)},`)
     });
 
     // remove the last comma
@@ -113,8 +138,7 @@ const emitSample = (context: EmitContext, model: Model, options: Options): { lin
     }
 
     // TODO: Check for open types
-
-    lines.push(`}`)
+    addLine(lines, indent, "}")
 
     return { lines }
 }
