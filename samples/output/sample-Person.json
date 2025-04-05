@@ -1,0 +1,15 @@
+{
+    "name": "John Doe",
+    "id": "32",
+    "email": "john@doe.com",
+    "phones": [
+        {
+            "number": "1234567890",
+            "type": TODO:1 EnumValue
+        },
+        {
+            "number": "0987654321",
+            "type": TODO:1 EnumValue
+        }
+    ]
+}

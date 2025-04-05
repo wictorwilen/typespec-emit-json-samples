@@ -1,5 +1,6 @@
-import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Type, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap } from "@typespec/compiler";
+import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap } from "@typespec/compiler";
 import { Options } from "./lib.js";
+import { log } from "console";
 
 const INDENT_SIZE = 4;
 
@@ -37,11 +38,31 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
                 ret = ret + "\n";
                 ret += line(indent, "]");
             } else {
-                ret = "[]"
+                // check if the array type has some examples
+                const name = ((property.type as ArrayModelType).indexer.value as Model).name;
+                const model = ((property.type as ArrayModelType).indexer.value as Model);
+                const examples = getExamples(context.program, model);
+                if (examples.length > 0) {
+                    ret = "[\n";
+                    const ex = getRandomItem(examples);
+                    
+                        ret += `${emitValue(context, property, ex.value, indent + 1)}\n`;
+     
+                    // remove the last comma
+                    if (ret.length > 1) {
+                        ret = ret.slice(0, -2);
+                    }
+                    ret = ret + "\n";
+                    ret += line(indent, "]");
+                    console.log("examples", examples);
+                } else {
+                    ret = "[]";
+                }
             }
             return ret;
             break;
         case "ObjectValue":
+
             ret = line(indent, "{\n");
             value.properties.forEach(v => {
                 ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
@@ -87,6 +108,7 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
                 return "TODO:2 " + ex.value.valueKind;
         }
     }
+    console.log("No examples found for property " + property.name);
 
     if (property.type.kind === "Model") {
         // TODO: not done yet

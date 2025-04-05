@@ -1,0 +1,9 @@
+emit:
+  - "typespec-emit-json-samples"
+options:
+  "typespec-emit-json-samples":
+    "namespace": "AddressBook"
+    "models":
+      - Car
+      - Person
+    "outDir": "{cwd}/output"
