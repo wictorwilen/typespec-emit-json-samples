@@ -10,8 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@typespec/http": "^1.0.0-rc.0",
     "@typespec/json-schema": "^1.0.0-rc.0",
     "@typespec/protobuf": "^0.68.0",
-    "typespec-emit-json-samples": "file:.."
+    "@wictorwilen/typespec-emit-json-samples": "file:.."
   }
 }

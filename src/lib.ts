@@ -7,7 +7,7 @@ export interface Options {
 }
 
 export const $lib = createTypeSpecLibrary({
-    name: "typespec-emit-json-samples",
+    name: "@wictorwilen/typespec-emit-json-samples",
     diagnostics: {
         // Add diagnostics here.
     },

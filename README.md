@@ -1,8 +1,8 @@
 # TypeSpec Emit JSON samples
 
-[![npm version](https://badge.fury.io/js/typespec-emit-json-samples.svg)](https://www.npmjs.com/package/typespec-emit-json-samples)
-[![npm](https://img.shields.io/npm/dt/typespec-emit-json-samples.svg)](https://www.npmjs.com/package/typespec-emit-json-samples)
-[![MIT](https://img.shields.io/npm/l/typespec-emit-json-samples.svg)](https://github.com/wictorwilen/typespec-emit-json-samples/blob/master/LICENSE.md)
+[![npm version](https://badge.fury.io/js/@wictorwilen%2Ftypespec-emit-json-samples.svg)](https://www.npmjs.com/package/@wictorwilen%2Ftypespec-emit-json-samples)
+[![npm](https://img.shields.io/npm/dt/@wictorwilen%2Ftypespec-emit-json-samples.svg)](https://www.npmjs.com/package/@wictorwilen%2Ftypespec-emit-json-samples)
+[![MIT](https://img.shields.io/npm/l/@wictorwilen%2Ftypespec-emit-json-samples.svg)](https://github.com/wictorwilen/typespec-emit-json-samples/blob/master/LICENSE.md)
 [![GitHub issues](https://img.shields.io/github/issues/wictorwilen/typespec-emit-json-samples.svg)](https://github.com/wictorwilen/typespec-emit-json-samples/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/wictorwilen/typespec-emit-json-samples.svg)](https://github.com/wictorwilen/typespec-emit-json-samples/issues?q=is%3Aissue+is%3Aclosed)
 
@@ -13,7 +13,7 @@
 To install the package, use npm:
 
 ```bash
-npm install typespec-emit-json-samples
+npm install @wictorwilen/typespec-emit-json-samples
 ```
 
 ## Usage
@@ -30,9 +30,9 @@ Use the following configuration in the `tspconfig.yaml`
 
 ``` yaml
 emit:
-  - "typespec-emit-json-samples"
+  - "@wictorwilen/typespec-emit-json-samples"
 options:
-  "typespec-emit-json-samples":
+  "@wictorwilen/typespec-emit-json-samples":
     "namespace": "PersonView"
     "models":
       - Car

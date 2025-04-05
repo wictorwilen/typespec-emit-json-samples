@@ -1,5 +1,5 @@
 {
-  "name": "typespec-emit-json-samples",
+  "name": "@wictorwilen/typespec-emit-json-samples",
   "version": "1.0.0-preview",
   "description": "TypeSpec emitter for models to create JSON sample objects based on the TypeSpec model and examples.",
   "license": "MIT",

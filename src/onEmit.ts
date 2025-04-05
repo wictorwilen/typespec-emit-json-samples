@@ -1,4 +1,4 @@
-import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap } from "@typespec/compiler";
+import { EmitContext, Model, Namespace, navigateProgram, emitFile, resolvePath, ModelProperty, Scalar, ArrayModelType, getDoc, getExamples, getProperty, ObjectValue, Value, RekeyableMap, EnumValue, EnumMember } from "@typespec/compiler";
 import { Options } from "./lib.js";
 import { log } from "console";
 
@@ -29,12 +29,8 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
             if (value.values.length > 0) {
                 ret = "[\n";
                 ret += value.values.map((v, index, arr) => {
-                    return emitValue(context, property, v, indent + 1) + "\n";
-                }).join("");
-                // remove the last comma
-                if (ret.length > 1) {
-                    ret = ret.slice(0, -2);
-                }
+                    return line(indent + 1, emitValue(context, property, v, indent + 1));
+                }).join(",\n");
                 ret = ret + "\n";
                 ret += line(indent, "]");
             } else {
@@ -45,16 +41,10 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
                 if (examples.length > 0) {
                     ret = "[\n";
                     const ex = getRandomItem(examples);
-                    
-                        ret += `${emitValue(context, property, ex.value, indent + 1)}\n`;
-     
-                    // remove the last comma
-                    if (ret.length > 1) {
-                        ret = ret.slice(0, -2);
-                    }
-                    ret = ret + "\n";
+
+                    ret += line(indent + 1, `${emitValue(context, property, ex.value, indent + 1)}\n`);
+
                     ret += line(indent, "]");
-                    console.log("examples", examples);
                 } else {
                     ret = "[]";
                 }
@@ -63,7 +53,7 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
             break;
         case "ObjectValue":
 
-            ret = line(indent, "{\n");
+            ret = "{\n";
             value.properties.forEach(v => {
                 ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
             });
@@ -74,15 +64,18 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
             }
             ret = ret + "\n";
 
-            ret = ret + line(indent, "},");
+            ret = ret + line(indent, "}");
 
             return ret;
+            break;
+        case "EnumValue":
+            return `"${(value.value as EnumMember).name}"`;
             break;
         default:
 
     }
     console.log(`Value type ${value.valueKind} not yet supported`);
-    return "TODO:1 " + value.valueKind;
+    return "\"#invalid " + value.valueKind + "\"";
 }
 
 const emitSampleValue = (context: EmitContext, model: Model, property: ModelProperty, options: Options, indent: number): string => {
@@ -108,33 +101,46 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
                 return "TODO:2 " + ex.value.valueKind;
         }
     }
-    console.log("No examples found for property " + property.name);
 
     if (property.type.kind === "Model") {
         // TODO: not done yet
         // check if the model has any default values
-        const modelEx = getExamples(context.program, property.type);
-        if (modelEx.length > 0) {
-            const ex = getRandomItem(modelEx);
-            switch (ex.value.valueKind) {
-                case "ObjectValue":
-                    let ret = line(indent, "{\n");
-                    ex.value.properties.forEach(v => {
-                        ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
-                    });
+        if (property.type.name === "Array") {
+            const model = (property.type as ArrayModelType).indexer.value as Model;
+            const examples = getExamples(context.program, model);
+            if (examples.length > 0) {
+                const ex = getRandomItem(examples);
+                let ret = "[\n";
+                ret += line(indent + 1, emitValue(context, property, ex.value, indent + 1));
+                ret += "\n";
+                ret = ret + line(indent, "]");
+                return ret;
+            }
+        } else {
+            const modelEx = getExamples(context.program, property.type);
+            if (modelEx.length > 0) {
+                const ex = getRandomItem(modelEx);
+                switch (ex.value.valueKind) {
+                    case "ObjectValue":
+                        let ret = line(indent, "{\n");
+                        ex.value.properties.forEach(v => {
+                            ret += line(indent + 1, `"${v.name}": ${emitValue(context, property, v.value, indent + 1)},\n`);
+                        });
 
-                    ret = ret + line(indent, "\n}");
-                    return ret;
+                        ret = ret + line(indent, "\n}");
+                        return ret;
 
-                    break;
-                default:
-                    console.log(`Value type ${ex.value.valueKind} not yet supported`);
-                    return "TODO:3 " + ex.value.valueKind;
+                        break;
+                    default:
+                        console.log(`Value type ${ex.value.valueKind} not yet supported`);
+                        return "TODO:3 " + ex.value.valueKind;
+                }
             }
         }
     }
+    // TODO: Scalar handling
 
-    // return undefined if no examples provided
+    // return null if no examples provided
     return "null"; // TODO: change to undefined in TS JSON mode
 }
 

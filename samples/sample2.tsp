@@ -5,7 +5,7 @@ using Protobuf;
 @package({
   name: "addressbook",
 })
-namespace AddressBook;
+namespace Samples;
 
 enum PhoneType {
   MOBILE: 0,

@@ -3,7 +3,7 @@ import "@typespec/json-schema";
 using JsonSchema;
 
 @jsonSchema
-namespace Schemas;
+namespace Samples;
 
 @example(#{name: "John Doe", address: #{street: "123 Main St", city: "Stockholm", country: "Sweden"}, nickNames: #["Johnny", "JD"]})
 model Person {
@@ -11,6 +11,7 @@ model Person {
   address: Address;
   @uniqueItems nickNames?: string[];
   cars?: Car[];
+  age?: int32;
 }
 @example(#{street: "123 Main St", city: "Stockholm", country: "Sweden"})
 model Address {
