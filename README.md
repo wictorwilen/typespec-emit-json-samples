@@ -25,6 +25,8 @@ This package is designed to work with the TypeSpec compiler. After installing, y
 TypeSpec document:
 
 ``` TypeSpec
+namespace Samples;
+
 @example(#{kind: "ev", brand: "Audi", year: 2020})
 model Car {
   kind: "ev" | "ice";
@@ -62,7 +64,7 @@ emit:
   - "@wictorwilen/typespec-emit-json-samples"
 options:
   "@wictorwilen/typespec-emit-json-samples":
-    "namespace": "PersonView"
+    "namespace": "Samples"
     "models":
       - Car
       - Engine
