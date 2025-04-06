@@ -11,3 +11,6 @@ options:
       - Address
     "outDir": "{cwd}/output"
     "setUndefinedToNull": true
+    "fillArrays": true
+    "arraySize": 3
+    "randomize": true

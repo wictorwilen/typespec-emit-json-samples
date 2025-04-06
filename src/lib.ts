@@ -4,7 +4,10 @@ export interface Options {
     "namespace": string | string[];
     "models": string[] | string;
     "outDir": string;
-    "setUndefinedToNull": boolean
+    "setUndefinedToNull": boolean,
+    "fillArrays": boolean,
+    "arraySize": number,
+    "randomize": boolean
 }
 
 export const $lib = createTypeSpecLibrary({
@@ -23,7 +26,10 @@ export const $lib = createTypeSpecLibrary({
                 "namespace": { type: ["string", "array"], items: { type: "string" } },
                 "models":  { type: ["string", "array"], items: { type: "string" } },
                 "outDir": { type: "string", format: "absolute-path" },
-                "setUndefinedToNull": { type: "boolean", default: true }
+                "setUndefinedToNull": { type: "boolean", default: true },
+                "fillArrays": { type: "boolean", default: false },
+                "arraySize": { type: "number", default: 1 },
+                "randomize": { type: "boolean", default: false }
             },
             required: ["namespace", "models"]
         } as JSONSchemaType<Options>

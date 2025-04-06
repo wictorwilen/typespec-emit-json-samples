@@ -50,6 +50,8 @@ Emitted JSON sample:
 * Uses the `@example` decorator to generate JSON samples
 * For multiple `@example` decorators a random example will be chosen
 * If no examples are found on a property the emitter tries to retrieve examples through inheritance
+* Populate arrays based on models and derived models, to create a great sample
+* Randomization if multiple examples exists for a model
 
 ## Configuration
 
@@ -59,6 +61,9 @@ Use the following configuration in the `tspconfig.yaml`
 - **models** (string or array(string), required) - the name of the models to create samples from  
 - **outDir**: (string) - the output directory
 - **setUndefinedToNull**: (boolean, default=true) - if set to false all non-defined properties in examples will be omitted, otherwise set to `null`
+- **fillArrays**: (boolean, default=false) - tries to populate the array even if the examples specifies an empty array
+- **arraySize**: (number, default=1) - the number of items to populate an array with
+- **randomize**: (boolean, default=false) - randomize the example selection if there are multiple choices.
 
 ``` yaml
 emit:
@@ -71,6 +76,9 @@ options:
       - Engine
     "outDir": "{cwd}/tsp-output"
     "setUndefinedToNull": true
+    "fillArray": true
+    "arraySize": 3
+    "randomize": true
 
 ```
 
