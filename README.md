@@ -58,6 +58,7 @@ Use the following configuration in the `tspconfig.yaml`
 - **namespace** (string or array(string), required) - the namespacse where the models are found
 - **models** (string or array(string), required) - the name of the models to create samples from  
 - **outDir**: (string) - the output directory
+- **setUndefinedToNull**: (boolean, default=true) - if set to false all non-defined properties in examples will be omitted, otherwise set to `null`
 
 ``` yaml
 emit:
@@ -69,6 +70,7 @@ options:
       - Car
       - Engine
     "outDir": "{cwd}/tsp-output"
+    "setUndefinedToNull": true
 
 ```
 

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased] - yyyy-mm-dd
  
 ### Added
+
+- Added support for `setUndefinedToNull` in options. Defaults to true. If set to true all non-defined properties to null, otherwise omit from sample.
  
 ### Changed
 

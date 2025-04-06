@@ -78,7 +78,7 @@ const emitValue = (context: EmitContext, property: ModelProperty, value: Value, 
     return "\"#invalid " + value.valueKind + "\"";
 }
 
-const emitSampleValue = (context: EmitContext, model: Model, property: ModelProperty, options: Options, indent: number): string => {
+const emitSampleValue = (context: EmitContext, model: Model, property: ModelProperty, options: Options, indent: number): string | undefined => {
 
     const propEx = getExamples(context.program, property);
     if (propEx.length > 0) {
@@ -141,7 +141,10 @@ const emitSampleValue = (context: EmitContext, model: Model, property: ModelProp
     // TODO: Scalar handling
 
     // return null if no examples provided
-    return "null"; // TODO: change to undefined in TS JSON mode
+    if (options.setUndefinedToNull) {
+        return "null";
+    }
+    return undefined;
 }
 
 // Emits the sample JSON for the model
@@ -153,11 +156,17 @@ const emitSample = (context: EmitContext, model: Model, options: Options): { lin
 
     if (model.baseModel) {
         model.baseModel.properties.forEach((prop: ModelProperty) => {
-            addLine(lines, indent + 1, `"${prop.name}": ${emitSampleValue(context, model, prop, options, indent + 1)},`)
+            const val = emitSampleValue(context, model, prop, options, indent + 1);
+            if (val !== undefined) {
+                addLine(lines, indent + 1, `"${prop.name}": ${val}},`);
+            }
         });
     }
     model.properties.forEach((prop: ModelProperty) => {
-        addLine(lines, indent + 1, `"${prop.name}": ${emitSampleValue(context, model, prop, options, indent + 1)},`)
+        const val = emitSampleValue(context, model, prop, options, indent + 1);
+        if (val !== undefined) {
+            addLine(lines, indent + 1, `"${prop.name}": ${val},`);
+        }
     });
 
     // remove the last comma
@@ -178,6 +187,7 @@ export async function $onEmit(context: EmitContext) {
             models: context.options["models"],
             outDir: context.options["outDir"],
             namespace: context.options["namespace"],
+            setUndefinedToNull: context.options["setUndefinedToNull"] ?? true
         }
 
         const outfiles: { [key: string]: string[] } = {};

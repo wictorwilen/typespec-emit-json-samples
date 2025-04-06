@@ -4,6 +4,7 @@ export interface Options {
     "namespace": string | string[];
     "models": string[] | string;
     "outDir": string;
+    "setUndefinedToNull": boolean
 }
 
 export const $lib = createTypeSpecLibrary({
@@ -21,7 +22,8 @@ export const $lib = createTypeSpecLibrary({
             properties: {
                 "namespace": { type: ["string", "array"], items: { type: "string" } },
                 "models":  { type: ["string", "array"], items: { type: "string" } },
-                "outDir": { type: "string", format: "absolute-path" }
+                "outDir": { type: "string", format: "absolute-path" },
+                "setUndefinedToNull": { type: "boolean", default: true }
             },
             required: ["namespace", "models"]
         } as JSONSchemaType<Options>

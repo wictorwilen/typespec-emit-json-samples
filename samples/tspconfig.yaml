@@ -10,3 +10,4 @@ options:
       - Store
       - Address
     "outDir": "{cwd}/output"
+    "setUndefinedToNull": true
