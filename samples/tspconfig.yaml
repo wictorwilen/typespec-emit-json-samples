@@ -2,7 +2,8 @@ emit:
   - "@wictorwilen/typespec-emit-json-samples"
 options:
   "@wictorwilen/typespec-emit-json-samples":
-    "namespace": "Samples"
+    "namespace": 
+      - Samples
     "models":
       - Car
       - Person

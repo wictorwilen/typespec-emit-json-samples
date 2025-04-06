@@ -183,9 +183,11 @@ export async function $onEmit(context: EmitContext) {
         const outfiles: { [key: string]: string[] } = {};
         navigateProgram(context.program, {
             namespace(ns) {
-                if (ns.name == options.namespace) {
+                if ((Array.isArray(options.namespace) && options.namespace.includes(ns.name))
+                    || ns.name == options.namespace) {
                     ns.models.forEach((model: Model) => {
-                        if (options.models.includes(model.name)) {
+                        if ((Array.isArray(options.models) && options.models.includes(model.name))
+                            || options.models === model.name) {
                             const result = emitSample(context, model, options);
                             outfiles[model.name] = result.lines;
                         }

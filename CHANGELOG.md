@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  
 ### Changed
+
+-  Both `namespace` and `models` can either be of type `string` or `string[]`
  
 ### Fixed
  

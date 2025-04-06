@@ -55,8 +55,8 @@ Emitted JSON sample:
 
 Use the following configuration in the `tspconfig.yaml`
 
-- **namespace** (string, required) - the namespace where the models are found
-- **models** (array(string), required) - the actual models to create samples from  
+- **namespace** (string or array(string), required) - the namespacse where the models are found
+- **models** (string or array(string), required) - the name of the models to create samples from  
 - **outDir**: (string) - the output directory
 
 ``` yaml

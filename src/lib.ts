@@ -1,8 +1,8 @@
 import { createTypeSpecLibrary, JSONSchemaType } from "@typespec/compiler";
 
 export interface Options {
-    "namespace": string;
-    "models": string[];
+    "namespace": string | string[];
+    "models": string[] | string;
     "outDir": string;
 }
 
@@ -19,8 +19,8 @@ export const $lib = createTypeSpecLibrary({
             type: "object",
             additionalProperties: false,
             properties: {
-                "namespace": { type: "string" },
-                "models": { type: "array", items: { type: "string" } },
+                "namespace": { type: ["string", "array"], items: { type: "string" } },
+                "models":  { type: ["string", "array"], items: { type: "string" } },
                 "outDir": { type: "string", format: "absolute-path" }
             },
             required: ["namespace", "models"]
