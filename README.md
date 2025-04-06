@@ -20,6 +20,35 @@ npm install @wictorwilen/typespec-emit-json-samples
 
 This package is designed to work with the TypeSpec compiler. After installing, you can use it to generate JSON sample objects.
 
+## Example
+
+TypeSpec document:
+
+``` TypeSpec
+@example(#{kind: "ev", brand: "Audi", year: 2020})
+model Car {
+  kind: "ev" | "ice";
+  brand: string;
+  @minValue(1900) year: int32;
+}
+```
+
+Emitted JSON sample:
+
+``` JSON
+{
+    "kind": "ev",
+    "brand": "Audi",
+    "year": "2020"
+}
+```
+
+## Features
+
+* Uses the `@example` decorator to generate JSON samples
+* For multiple `@example` decorators a random example will be chosen
+* If no examples are found on a property the emitter tries to retrieve examples through inheritance
+
 ## Configuration
 
 Use the following configuration in the `tspconfig.yaml`
@@ -40,8 +69,6 @@ options:
     "outDir": "{cwd}/tsp-output"
 
 ```
-
-
 
 ## Development
 
@@ -67,4 +94,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
-Created by [Wictor Wilén](https://www.wictorwilen.se). For inquiries, contact [wictorwilen@microsoft.com](mailto:wictorwilen@microsoft.com).
+Created by [Wictor Wilén](https://www.wictorwilen.se). For inquiries, contact [wictor@wictorwilen.se](mailto:wictor@wictorwilen.se).
